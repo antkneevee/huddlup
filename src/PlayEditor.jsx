@@ -234,6 +234,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           .filter((tag) => tag !== ''),
         image: dataURL,
         printImage: printURL,
+        locked: false,
       };
 
       await setDoc(
@@ -287,6 +288,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           .filter((tag) => tag !== ''),
         image: dataURL,
         printImage: printURL,
+        locked: false,
       };
 
       await setDoc(
