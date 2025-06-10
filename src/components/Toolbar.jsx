@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, FilePlus } from 'lucide-react';
 
-const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => {
+const Toolbar = ({
+  onNewPlay,
+  onUndo,
+  onExport,
+  onShare,
+  onSave,
+  onSaveAs,
+  playName,
+  playTags,
+  onPlayNameChange,
+  onPlayTagsChange,
+}) => {
   const [aspect, setAspect] = useState('1.333');
 
   const handleExportClick = () => {
@@ -19,7 +30,7 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => 
 
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 items-center">
       <button
         className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
         onClick={onNewPlay}
@@ -48,6 +59,21 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => 
           <FilePlus className="w-4 h-4 mr-1" /> Save As
         </button>
       )}
+
+      <input
+        type="text"
+        value={playName}
+        onChange={(e) => onPlayNameChange(e.target.value)}
+        placeholder="Play Name"
+        className="p-1 rounded bg-gray-700 text-white"
+      />
+      <input
+        type="text"
+        value={playTags}
+        onChange={(e) => onPlayTagsChange(e.target.value)}
+        placeholder="Tags"
+        className="p-1 rounded bg-gray-700 text-white"
+      />
       <div className="flex items-center gap-2">
         <select
           value={aspect}
