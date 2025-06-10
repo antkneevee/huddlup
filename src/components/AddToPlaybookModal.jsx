@@ -21,12 +21,12 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
         const books = [];
         for (let key in localStorage) {
           if (key.startsWith('Playbook-')) {
-            try {
-              const book = JSON.parse(localStorage.getItem(key));
-              books.push(book);
-            } catch (e) {
-              // ignore bad data
-            }
+              try {
+                const book = JSON.parse(localStorage.getItem(key));
+                books.push(book);
+              } catch {
+                // ignore bad data
+              }
           }
         }
         setPlaybooks(books);
