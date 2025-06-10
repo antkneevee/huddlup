@@ -172,6 +172,8 @@ const FootballField = ({
       if (!pointerPosition) return;
 
       const { x, y } = pointerPosition;
+      const scaledX = x / scale;
+      const scaledY = y / scale;
       const selectedPlayer = players[selectedPlayerIndex];
       const startX = selectedPlayer.x;
       const startY = selectedPlayer.y;
@@ -197,11 +199,11 @@ const FootballField = ({
       }
 
       if (targetRoute) {
-        targetRoute.points.push(x, y);
+        targetRoute.points.push(scaledX, scaledY);
       } else {
         newRoutes.push({
           playerId: selectedPlayer.id,
-          points: [startX, startY, x, y],
+          points: [startX, startY, scaledX, scaledY],
           color: selectedPlayer.fill,
           style: 'solid',
           smooth: false,
