@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
@@ -13,7 +13,8 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [printBookId, setPrintBookId] = useState(null);
   const [playsMap, setPlaysMap] = useState({});
   const [deleteId, setDeleteId] = useState(null);
-  const { teams, selectedTeamId } = useTeamsContext();
+  const { selectedTeamId, teams } = useTeamsContext();
+
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -45,6 +46,13 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     };
     fetchBooks();
   }, [user]);
+
+  const displayedPlaybooks = useMemo(() => {
+    if (!selectedTeamId) return playbooks;
+    const team = teams.find((t) => t.id === selectedTeamId);
+    if (!team) return playbooks;
+    return playbooks.filter((pb) => (team.playbooks || []).includes(pb.id));
+  }, [playbooks, selectedTeamId, teams]);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -307,7 +315,10 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
           <PlusCircle className="w-4 h-4 mr-1" /> Add
         </button>
       </div>
-      {displayedPlaybooks.map((book, bIndex) => (
+      {displayedPlaybooks.map((book) => {
+        const bIndex = playbooks.findIndex((b) => b.id === book.id);
+        return (
+
         <div key={book.id} className="mb-8 bg-gray-800 p-4 rounded">
           <div className="flex justify-between items-center mb-2">
 
@@ -383,11 +394,12 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
                     <h3 className="text-sm font-bold">{play.name}</h3>
                   </div>
                 );
-              })}
-            </div>
-          )}
-        </div>
-      ))}
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
       {showPrintModal && (
         <PrintOptionsModal onClose={() => setShowPrintModal(false)} onPrint={handlePrintConfirm} />
       )}
