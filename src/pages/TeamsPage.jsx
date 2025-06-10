@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
-import TeamFormModal from '../components/TeamFormModal.js';
+import TeamFormModal from '../components/TeamFormModal.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
 
 const TeamsPage = () => {
