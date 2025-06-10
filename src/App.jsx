@@ -8,7 +8,8 @@ import PlaybookLibrary from './components/PlaybookLibrary';
 import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_white_w_trans.png';
 import LandingPage from './LandingPage';
-import { Home, Book, BookOpen } from 'lucide-react';
+import { Home, Book, BookOpen, Users } from 'lucide-react';
+import TeamsPage from './pages/TeamsPage.js';
 
 const AppContent = ({ user, openSignIn }) => {
 
@@ -55,6 +56,12 @@ const AppContent = ({ user, openSignIn }) => {
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
             >
               <BookOpen className="w-4 h-4 mr-1" /> Playbooks
+            </Link>
+            <Link
+              to="/teams"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <Users className="w-4 h-4 mr-1" /> Teams
             </Link>
             {user ? (
               <>
@@ -103,6 +110,7 @@ const AppContent = ({ user, openSignIn }) => {
             path="/playbooks"
             element={<PlaybookLibrary user={user} openSignIn={openSignIn} />}
           />
+          <Route path="/teams" element={<TeamsPage />} />
         </Routes>
       </main>
     </div>
