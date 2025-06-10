@@ -680,6 +680,22 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
               <p className="text-sm">Select a player to edit.</p>
             )}
           </aside>
+
+          {/* Defense Options */}
+          <aside className="bg-gray-800 p-4 rounded">
+            <h2 className="text-lg font-bold mb-2">Defense Formation</h2>
+            <select
+              value={defenseFormation}
+              onChange={(e) => setDefenseFormation(e.target.value)}
+              className="w-full p-1 rounded text-white bg-gray-700"
+            >
+              <option value="No">No</option>
+              <option value="1-3-1">1-3-1</option>
+              <option value="3-2">3-2</option>
+              <option value="4-1">4-1</option>
+              <option value="2-3">2-3</option>
+            </select>
+          </aside>
         </div>
 
         <div className="overflow-x-auto order-1 lg:order-none flex-1">
@@ -779,10 +795,10 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             )}
           </aside>
 
-          {/* Note Editor */}
+          {/* Notes Editor */}
           <aside className="bg-gray-800 p-4 rounded">
             <h2 className="text-lg font-bold flex items-center mb-2">
-              <StickyNote className="w-4 h-4 mr-1" /> Note Editor
+              <StickyNote className="w-4 h-4 mr-1" /> Notes Editor
             </h2>
             {selectedNoteIndex !== null ? (
               <>
@@ -866,21 +882,6 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           </button>
         </aside>
 
-        {/* Defense Options */}
-        <aside className="bg-gray-800 p-4 rounded">
-          <h2 className="text-lg font-bold mb-2">Defense Formation</h2>
-          <select
-            value={defenseFormation}
-            onChange={(e) => setDefenseFormation(e.target.value)}
-            className="w-full p-1 rounded text-white bg-gray-700"
-          >
-            <option value="No">No</option>
-            <option value="1-3-1">1-3-1</option>
-            <option value="3-2">3-2</option>
-            <option value="4-1">4-1</option>
-            <option value="2-3">2-3</option>
-          </select>
-        </aside>
 
         <aside className="bg-gray-800 p-4 rounded">
           <h2 className="text-lg font-bold mb-2">Play Info</h2>
