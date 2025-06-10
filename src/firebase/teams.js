@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import {
   collection,
   addDoc,
@@ -10,6 +10,7 @@ import {
   where,
   serverTimestamp,
 } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const createTeam = async (teamName, teamLogoUrl, userId) => {
   const data = {
@@ -32,6 +33,13 @@ export const editTeam = async (teamId, updates) => {
 
 export const deleteTeam = async (teamId) => {
   await deleteDoc(doc(db, 'teams', teamId));
+};
+
+export const uploadTeamLogo = async (teamId, file) => {
+  if (!teamId || !file) return null;
+  const fileRef = ref(storage, `teamLogos/${teamId}.png`);
+  await uploadBytes(fileRef, file);
+  return await getDownloadURL(fileRef);
 };
 
 export const getTeamsByUser = async (userId) => {

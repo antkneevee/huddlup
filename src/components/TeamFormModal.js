@@ -2,25 +2,39 @@ import React, { useEffect, useState } from 'react';
 
 const TeamFormModal = ({ initialData = {}, onSave, onCancel }) => {
   const [name, setName] = useState(initialData.teamName || '');
-  const [logo, setLogo] = useState(initialData.teamLogoUrl || '');
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(initialData.teamLogoUrl || '');
 
   useEffect(() => {
     setName(initialData.teamName || '');
-    setLogo(initialData.teamLogoUrl || '');
+    setLogoPreview(initialData.teamLogoUrl || '');
+    setLogoFile(null);
   }, [initialData]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setLogo(reader.result);
-      reader.readAsDataURL(file);
+    if (!file) {
+      setLogoFile(null);
+      return;
     }
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      alert('Please upload a PNG or JPEG image.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be under 5MB.');
+      return;
+    }
+    setLogoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setLogoPreview(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ teamName: name.trim(), teamLogoUrl: logo });
+    onSave({ teamName: name.trim(), logoFile });
   };
 
   return (
@@ -42,8 +56,8 @@ const TeamFormModal = ({ initialData = {}, onSave, onCancel }) => {
             required
           />
           <input type="file" accept="image/*" onChange={handleFileChange} />
-          {logo && (
-            <img src={logo} alt="Logo preview" className="h-16 w-16 object-cover rounded" />
+          {logoPreview && (
+            <img src={logoPreview} alt="Logo preview" className="h-16 w-16 object-cover rounded" />
           )}
           <div className="flex justify-end gap-2 mt-2">
             <button type="button" onClick={onCancel} className="px-3 py-1 rounded bg-gray-300">
