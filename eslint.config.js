@@ -30,4 +30,24 @@ export default [
       ],
     },
   },
+  {
+    files: [
+      '*.config.js',
+      '*.config.cjs',
+      'vite.config.js',
+      'babel.config.js',
+      'postcss.config.cjs',
+      'jest.config.cjs',
+      'tailwind.config.js',
+    ],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
+    files: ['**/*.test.{js,jsx}'],
+    languageOptions: {
+      globals: globals.jest,
+    },
+  },
 ]

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
 import { db, auth } from '../firebase';
-import { collection, getDocs, setDoc, doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore';
 
 const PlaybookLibrary = ({ user, openSignIn }) => {
   const [playbooks, setPlaybooks] = useState([]);
@@ -23,7 +23,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
             try {
               const book = JSON.parse(localStorage.getItem(key));
               books.push(book);
-            } catch (e) {
+            } catch {
               // ignore malformed data
             }
           }

@@ -55,7 +55,6 @@ const FootballField = ({
   setNotes,
   selectedRouteIndex,
   setSelectedRouteIndex,
-  selectedNoteIndex,
   setSelectedNoteIndex,
   handlePointDrag,
   stageRef,
