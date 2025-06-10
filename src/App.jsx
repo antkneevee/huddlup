@@ -114,7 +114,10 @@ const AppContent = ({ user, openSignIn }) => {
             path="/playbooks"
             element={<PlaybookLibrary user={user} openSignIn={openSignIn} />}
           />
-          <Route path="/teams" element={<TeamsPage />} />
+          <Route
+            path="/teams"
+            element={<TeamsPage user={user} openSignIn={openSignIn} />}
+          />
         </Routes>
       </main>
     </div>
