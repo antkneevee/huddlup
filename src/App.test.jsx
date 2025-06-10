@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 
-jest.mock('./firebase', () => ({ auth: {}, db: {} }));
+jest.mock('./firebase', () => ({ auth: {}, db: {}, storage: {} }));
 jest.mock('./PlayEditor', () => () => <div>Editor</div>);
 jest.mock('./components/PlayLibrary', () => () => <div>PlayLibrary</div>);
 jest.mock('./components/PlaybookLibrary', () => () => <div>PlaybookLibrary</div>);

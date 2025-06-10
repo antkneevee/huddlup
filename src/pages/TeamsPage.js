@@ -23,7 +23,7 @@ const TeamsPage = () => {
     if (editing) {
       await editTeam(editing.id, data);
     } else {
-      await createTeam(data.teamName, data.teamLogoUrl);
+      await createTeam(data.teamName, data.logoFile);
     }
     setShowForm(false);
   };

@@ -6,6 +6,7 @@ import {
   createTeam as fbCreateTeam,
   editTeam as fbEditTeam,
   deleteTeam as fbDeleteTeam,
+  uploadTeamLogo,
 } from '../firebase/teams';
 
 const TeamsContext = createContext({
@@ -34,18 +35,31 @@ export const TeamsContextProvider = ({ children }) => {
     }
   };
 
-  const createTeam = async (name, logoUrl) => {
+  const createTeam = async (name, logoFile) => {
     if (!auth.currentUser) return null;
-    const team = await fbCreateTeam(name, logoUrl, auth.currentUser.uid);
+    const team = await fbCreateTeam(name, null, auth.currentUser.uid);
+    if (logoFile) {
+      const url = await uploadTeamLogo(team.id, logoFile);
+      await fbEditTeam(team.id, { teamLogoUrl: url });
+      team.teamLogoUrl = url;
+    }
     setTeams((prev) => [...prev, team]);
     return team;
   };
 
-  const editTeam = async (teamId, updates) => {
-    await fbEditTeam(teamId, updates);
-    setTeams((prev) =>
-      prev.map((t) => (t.id === teamId ? { ...t, ...updates } : t))
-    );
+  const editTeam = async (teamId, { teamName, logoFile }) => {
+    const updates = {};
+    if (teamName !== undefined) updates.teamName = teamName;
+    if (logoFile) {
+      const url = await uploadTeamLogo(teamId, logoFile);
+      updates.teamLogoUrl = url;
+    }
+    if (Object.keys(updates).length) {
+      await fbEditTeam(teamId, updates);
+      setTeams((prev) =>
+        prev.map((t) => (t.id === teamId ? { ...t, ...updates } : t))
+      );
+    }
   };
 
   const deleteTeam = async (teamId) => {
