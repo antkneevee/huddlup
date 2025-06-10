@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
 import TeamFormModal from '../components/TeamFormModal.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
 
-const TeamsPage = () => {
+import { auth } from '../firebase';
+
+const TeamsPage = ({ user, openSignIn }) => {
   const { teams, createTeam, editTeam, deleteTeam } = useTeamsContext();
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
 
+  useEffect(() => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+    }
+  }, [user]);
+
   const openCreate = () => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+      return;
+    }
     setEditing(null);
     setShowForm(true);
   };
 
   const openEdit = (team) => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+      return;
+    }
     setEditing(team);
     setShowForm(true);
   };
 
   const handleSave = async (data) => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+      return;
+    }
     if (editing) {
       await editTeam(editing.id, data);
     } else {
@@ -29,6 +49,10 @@ const TeamsPage = () => {
   };
 
   const handleDelete = async () => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+      return;
+    }
     if (deleteId) {
       await deleteTeam(deleteId);
       setDeleteId(null);
