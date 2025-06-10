@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AddToPlaybookModal from './AddToPlaybookModal';
+import { Lock, Unlock, Trash2 } from 'lucide-react';
 import { db, auth } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
 const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
   const [plays, setPlays] = useState([]);
@@ -49,6 +50,23 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
     }
   };
 
+  const toggleLock = async (playId, locked) => {
+    if (!auth.currentUser) return;
+    const ref = doc(db, 'users', auth.currentUser.uid, 'plays', playId);
+    await updateDoc(ref, { locked: !locked });
+    setPlays((prev) =>
+      prev.map((p) => (p.id === playId ? { ...p, locked: !locked } : p))
+    );
+  };
+
+  const deletePlay = async (playId) => {
+    if (!auth.currentUser) return;
+    if (!window.confirm('Delete this play?')) return;
+    const ref = doc(db, 'users', auth.currentUser.uid, 'plays', playId);
+    await deleteDoc(ref);
+    setPlays((prev) => prev.filter((p) => p.id !== playId));
+  };
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Play Library</h1>
@@ -75,18 +93,48 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
           <div
             key={play.id}
             className="bg-gray-800 rounded p-2 cursor-pointer relative hover:bg-gray-700"
-            onClick={() => onSelectPlay(play)}
+            onClick={() => {
+              if (play.locked) {
+                alert('Unlock this play to edit');
+                return;
+              }
+              onSelectPlay(play);
+            }}
           >
-            <button
-              className="absolute top-1 right-1 bg-blue-600 text-white text-xs px-2 py-1 rounded"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedPlayId(play.id);
-                setShowAddModal(true);
-              }}
-            >
-              Add
-            </button>
+            <div className="absolute top-1 right-1 flex gap-1">
+              <button
+                className="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPlayId(play.id);
+                  setShowAddModal(true);
+                }}
+              >
+                Add
+              </button>
+              <button
+                className="bg-gray-600 text-white p-1 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleLock(play.id, play.locked);
+                }}
+              >
+                {play.locked ? (
+                  <Lock className="w-3 h-3" />
+                ) : (
+                  <Unlock className="w-3 h-3" />
+                )}
+              </button>
+              <button
+                className="bg-red-600 text-white p-1 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deletePlay(play.id);
+                }}
+              >
+                <Trash2 className="w-3 h-3" />
+              </button>
+            </div>
             {play.image ? (
               <img
                 src={play.image}
