@@ -628,28 +628,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       </div>
 
       <main className="flex flex-col lg:flex-row items-start mt-4 px-4 w-full max-w-7xl mx-auto gap-4">
-        <div className="overflow-x-auto">
-        <FootballField
-          players={players}
-          setPlayers={setPlayers}
-          setSelectedPlayerIndex={setSelectedPlayerIndex}
-          routes={routes}
-          setRoutes={setRoutes}
-          selectedPlayerIndex={selectedPlayerIndex}
-          setUndoStack={setUndoStack}
-          notes={notes}
-          setNotes={setNotes}
-          selectedRouteIndex={selectedRouteIndex}
-          setSelectedRouteIndex={setSelectedRouteIndex}
-          selectedNoteIndex={selectedNoteIndex}
-          setSelectedNoteIndex={setSelectedNoteIndex}
-          handlePointDrag={handlePointDrag}
-          stageRef={stageRef}
-          defenseFormation={defenseFormation}
-        />
-        </div>
-
-        <div className="flex flex-col gap-4 w-full lg:w-60">
+        <div className="flex flex-col gap-4 w-full lg:w-60 order-2 lg:order-none">
           {/* Player Editor */}
           <aside className="bg-gray-800 p-4 rounded">
             <h2 className="text-lg font-bold flex items-center mb-2">
@@ -701,7 +680,30 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
               <p className="text-sm">Select a player to edit.</p>
             )}
           </aside>
+        </div>
 
+        <div className="overflow-x-auto order-1 lg:order-none flex-1">
+          <FootballField
+            players={players}
+            setPlayers={setPlayers}
+            setSelectedPlayerIndex={setSelectedPlayerIndex}
+          routes={routes}
+          setRoutes={setRoutes}
+          selectedPlayerIndex={selectedPlayerIndex}
+          setUndoStack={setUndoStack}
+          notes={notes}
+          setNotes={setNotes}
+          selectedRouteIndex={selectedRouteIndex}
+          setSelectedRouteIndex={setSelectedRouteIndex}
+          selectedNoteIndex={selectedNoteIndex}
+          setSelectedNoteIndex={setSelectedNoteIndex}
+          handlePointDrag={handlePointDrag}
+          stageRef={stageRef}
+          defenseFormation={defenseFormation}
+        />
+        </div>
+
+        <div className="flex flex-col gap-4 w-full lg:w-60 order-3 lg:order-none">
           {/* Route Editor */}
           <aside className="bg-gray-800 p-4 rounded">
             <h2 className="text-lg font-bold flex items-center mb-2">
@@ -880,36 +882,24 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           </select>
         </aside>
 
-        {/* Save Play */}
         <aside className="bg-gray-800 p-4 rounded">
-          <h2 className="text-lg font-bold mb-2">Save Play</h2>
+          <h2 className="text-lg font-bold mb-2">Play Info</h2>
           <input
-              type="text"
-              value={playName}
-              onChange={(e) => setPlayName(e.target.value)}
-              placeholder="Play Name"
-              className="w-full p-1 rounded text-white bg-gray-700 mb-2"
-            />
-            <input
-              type="text"
-              value={playTags}
-              onChange={(e) => setPlayTags(e.target.value)}
-              placeholder="Tags (comma-separated)"
-              className="w-full p-1 rounded text-white bg-gray-700 mb-2"
-            />
-            <button
-              onClick={handleSave}
-              className="w-full bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white"
-            >
-              Save Play
-            </button>
-            <button
-              onClick={handleSaveAs}
-              className="w-full mt-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
-            >
-              Save As
-            </button>
-          </aside>
+            type="text"
+            value={playName}
+            onChange={(e) => setPlayName(e.target.value)}
+            placeholder="Play Name"
+            className="w-full p-1 rounded text-white bg-gray-700 mb-2"
+          />
+          <input
+            type="text"
+            value={playTags}
+            onChange={(e) => setPlayTags(e.target.value)}
+            placeholder="Tags (comma-separated)"
+            className="w-full p-1 rounded text-white bg-gray-700"
+          />
+        </aside>
+
         </div>
       </main>
 
@@ -920,6 +910,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             onUndo={handleUndo}
             onExport={handleExport}
             onShare={handleShare}
+            onSave={handleSave}
+            onSaveAs={handleSaveAs}
           />
         </div>
       </div>

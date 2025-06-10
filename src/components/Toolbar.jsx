@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { PlusCircle, RotateCcw, Download, Share as ShareIcon } from 'lucide-react';
+import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, SaveAs } from 'lucide-react';
 
-const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
+const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => {
   const [aspect, setAspect] = useState('1.333');
 
   const handleExportClick = () => {
@@ -32,6 +32,22 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
       >
         <RotateCcw className="w-4 h-4 mr-1" /> Undo
       </button>
+      {onSave && (
+        <button
+          className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          onClick={onSave}
+        >
+          <Save className="w-4 h-4 mr-1" /> Save
+        </button>
+      )}
+      {onSaveAs && (
+        <button
+          className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          onClick={onSaveAs}
+        >
+          <SaveAs className="w-4 h-4 mr-1" /> Save As
+        </button>
+      )}
       <div className="flex items-center gap-2">
         <select
           value={aspect}
