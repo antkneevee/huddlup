@@ -296,12 +296,6 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     setPrintBookId(null);
   };
 
-  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
-  const displayedPlaybooks = selectedTeam
-    ? playbooks.filter((pb) =>
-        selectedTeam.playbooks && selectedTeam.playbooks.includes(pb.id)
-      )
-    : playbooks;
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
