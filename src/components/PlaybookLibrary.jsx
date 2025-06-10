@@ -4,6 +4,7 @@ import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
 import { db, auth } from '../firebase';
 import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { useTeamsContext } from '../context/TeamsContext.jsx';
 
 const PlaybookLibrary = ({ user, openSignIn }) => {
   const [playbooks, setPlaybooks] = useState([]);
@@ -12,6 +13,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [printBookId, setPrintBookId] = useState(null);
   const [playsMap, setPlaysMap] = useState({});
   const [deleteId, setDeleteId] = useState(null);
+  const { teams, selectedTeamId } = useTeamsContext();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -286,6 +288,13 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     setPrintBookId(null);
   };
 
+  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
+  const displayedPlaybooks = selectedTeam
+    ? playbooks.filter((pb) =>
+        selectedTeam.playbooks && selectedTeam.playbooks.includes(pb.id)
+      )
+    : playbooks;
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
 
@@ -298,7 +307,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
           <PlusCircle className="w-4 h-4 mr-1" /> Add
         </button>
       </div>
-      {playbooks.map((book, bIndex) => (
+      {displayedPlaybooks.map((book, bIndex) => (
         <div key={book.id} className="mb-8 bg-gray-800 p-4 rounded">
           <div className="flex justify-between items-center mb-2">
 

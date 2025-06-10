@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
 import SignInModal from './components/SignInModal';
-import logo from './assets/huddlup_logo_white_w_trans.png';
 import LandingPage from './LandingPage';
+
 import { Home, Book, BookOpen, Users } from 'lucide-react';
 import TeamsPage from './pages/TeamsPage.js';
+
 
 const AppContent = ({ user, openSignIn }) => {
 
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
@@ -24,6 +24,7 @@ const AppContent = ({ user, openSignIn }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+
       {/* Header */}
       {location.pathname !== '/landing' && location.pathname !== '/' && (
       <header className="w-full bg-gray-800">
@@ -86,6 +87,7 @@ const AppContent = ({ user, openSignIn }) => {
         </div>
       </header>
       )}
+
 
       {/* Main Content */}
       <main className="flex-grow">
