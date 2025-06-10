@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddToPlaybookModal from './AddToPlaybookModal';
+import AlertModal from './AlertModal';
+import ConfirmModal from './ConfirmModal';
 import { Lock, Unlock, Trash2 } from 'lucide-react';
 import { db, auth } from '../firebase';
 import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
@@ -11,6 +13,8 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPlayId, setSelectedPlayId] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [deletePlayId, setDeletePlayId] = useState(null);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -61,10 +65,15 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
 
   const deletePlay = async (playId) => {
     if (!auth.currentUser) return;
-    if (!window.confirm('Delete this play?')) return;
     const ref = doc(db, 'users', auth.currentUser.uid, 'plays', playId);
     await deleteDoc(ref);
     setPlays((prev) => prev.filter((p) => p.id !== playId));
+  };
+
+  const confirmDelete = async () => {
+    if (!deletePlayId) return;
+    await deletePlay(deletePlayId);
+    setDeletePlayId(null);
   };
 
   return (
@@ -95,7 +104,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
             className="bg-gray-800 rounded p-2 cursor-pointer relative hover:bg-gray-700"
             onClick={() => {
               if (play.locked) {
-                alert('Unlock this play to edit');
+                setShowUnlockModal(true);
                 return;
               }
               onSelectPlay(play);
@@ -129,7 +138,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
                 className="bg-red-600 text-white p-1 rounded"
                 onClick={(e) => {
                   e.stopPropagation();
-                  deletePlay(play.id);
+                  setDeletePlayId(play.id);
                 }}
               >
                 <Trash2 className="w-3 h-3" />
@@ -170,6 +179,18 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow">
           Play successfully added to Playbook!
         </div>
+      )}
+      {showUnlockModal && (
+        <AlertModal message="Unlock this play to edit" onClose={() => setShowUnlockModal(false)} />
+      )}
+      {deletePlayId && (
+        <ConfirmModal
+          title="Delete Play"
+          message="Are you sure you want to delete this play?"
+          confirmText="Delete"
+          onCancel={() => setDeletePlayId(null)}
+          onConfirm={confirmDelete}
+        />
       )}
     </div>
   );
