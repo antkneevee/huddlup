@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, SaveAs } from 'lucide-react';
+import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, FilePlus } from 'lucide-react';
 
 const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => {
   const [aspect, setAspect] = useState('1.333');
@@ -45,7 +45,7 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare, onSave, onSaveAs }) => 
           className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
           onClick={onSaveAs}
         >
-          <SaveAs className="w-4 h-4 mr-1" /> Save As
+          <FilePlus className="w-4 h-4 mr-1" /> Save As
         </button>
       )}
       <div className="flex items-center gap-2">
