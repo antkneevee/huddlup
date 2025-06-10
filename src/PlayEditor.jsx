@@ -883,23 +883,6 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         </aside>
 
 
-        <aside className="bg-gray-800 p-4 rounded">
-          <h2 className="text-lg font-bold mb-2">Play Info</h2>
-          <input
-            type="text"
-            value={playName}
-            onChange={(e) => setPlayName(e.target.value)}
-            placeholder="Play Name"
-            className="w-full p-1 rounded text-white bg-gray-700 mb-2"
-          />
-          <input
-            type="text"
-            value={playTags}
-            onChange={(e) => setPlayTags(e.target.value)}
-            placeholder="Tags (comma-separated)"
-            className="w-full p-1 rounded text-white bg-gray-700"
-          />
-        </aside>
 
         </div>
       </main>
@@ -913,6 +896,10 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             onShare={handleShare}
             onSave={handleSave}
             onSaveAs={handleSaveAs}
+            playName={playName}
+            onPlayNameChange={setPlayName}
+            playTags={playTags}
+            onPlayTagsChange={setPlayTags}
           />
         </div>
       </div>
