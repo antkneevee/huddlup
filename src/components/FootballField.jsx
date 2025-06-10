@@ -73,6 +73,15 @@ const FootballField = ({
   const indicatorRef = useRef(null);
   const animRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const [crosshair, setCrosshair] = useState(null);
+
+  const showCrosshair = (x, y) => {
+    setCrosshair({ x, y });
+  };
+
+  const hideCrosshair = () => {
+    setCrosshair(null);
+  };
 
   useEffect(() => {
     const updateScale = () => {
@@ -316,9 +325,12 @@ const FootballField = ({
                       stroke="#000"
                       strokeWidth={1}
                       draggable
+                      onDragStart={(e) => showCrosshair(e.target.x(), e.target.y())}
                       onDragMove={(e) => {
+                        showCrosshair(e.target.x(), e.target.y());
                         handlePointDrag(index, i / 2, e.target.x(), e.target.y());
                       }}
+                      onDragEnd={() => hideCrosshair()}
                     />
                   );
                 })}
@@ -339,7 +351,10 @@ const FootballField = ({
               if (setSelectedPlayerIndex) setSelectedPlayerIndex(null);
               if (setSelectedRouteIndex) setSelectedRouteIndex(null);
             }}
+            onDragStart={(e) => showCrosshair(e.target.x(), e.target.y())}
+            onDragMove={(e) => showCrosshair(e.target.x(), e.target.y())}
             onDragEnd={(e) => {
+              hideCrosshair();
               const updatedNotes = [...notes];
               updatedNotes[index].x = e.target.x();
               updatedNotes[index].y = e.target.y();
@@ -370,7 +385,12 @@ const FootballField = ({
             y={player.y}
             draggable
             dragBoundFunc={dragBoundFunc}
-            onDragEnd={(e) => handleDragEnd(e, index)}
+            onDragStart={(e) => showCrosshair(e.target.x(), e.target.y())}
+            onDragMove={(e) => showCrosshair(e.target.x(), e.target.y())}
+            onDragEnd={(e) => {
+              hideCrosshair();
+              handleDragEnd(e, index);
+            }}
             onClick={() => handleClick(index)}
           >
             {selectedPlayerIndex === index && (
@@ -468,6 +488,23 @@ const FootballField = ({
             />
           </Group>
         ))}
+
+        {crosshair && (
+          <>
+            <Line
+              points={[crosshair.x, 0, crosshair.x, height]}
+              stroke="#d1d5db"
+              strokeWidth={1}
+              listening={false}
+            />
+            <Line
+              points={[0, crosshair.y, width, crosshair.y]}
+              stroke="#d1d5db"
+              strokeWidth={1}
+              listening={false}
+            />
+          </>
+        )}
       </Layer>
     </Stage>
     </div>
