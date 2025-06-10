@@ -51,6 +51,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     if (!selectedTeamId) return playbooks;
     const team = teams.find((t) => t.id === selectedTeamId);
     if (!team) return playbooks;
+    if (!team.playbooks || team.playbooks.length === 0) return playbooks;
     return playbooks.filter((pb) => (team.playbooks || []).includes(pb.id));
   }, [playbooks, selectedTeamId, teams]);
 
