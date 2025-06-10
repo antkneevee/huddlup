@@ -15,6 +15,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [deleteId, setDeleteId] = useState(null);
   const { selectedTeamId, teams } = useTeamsContext();
 
+
   useEffect(() => {
     const fetchBooks = async () => {
       if (!auth.currentUser) {
@@ -295,6 +296,13 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     setPrintBookId(null);
   };
 
+  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
+  const displayedPlaybooks = selectedTeam
+    ? playbooks.filter((pb) =>
+        selectedTeam.playbooks && selectedTeam.playbooks.includes(pb.id)
+      )
+    : playbooks;
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
 
@@ -310,6 +318,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       {displayedPlaybooks.map((book) => {
         const bIndex = playbooks.findIndex((b) => b.id === book.id);
         return (
+
         <div key={book.id} className="mb-8 bg-gray-800 p-4 rounded">
           <div className="flex justify-between items-center mb-2">
 

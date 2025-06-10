@@ -1,0 +1,90 @@
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { Home, Book, BookOpen } from 'lucide-react';
+import { auth } from '../firebase';
+import logo from '../assets/huddlup_logo_white_w_trans.png';
+import { useTeamsContext } from '../context/TeamsContext.jsx';
+
+const NavBar = ({ user, openSignIn }) => {
+  const location = useLocation();
+  const { teams, selectedTeamId, setSelectedTeamId } = useTeamsContext();
+
+  const handleChange = (e) => {
+    setSelectedTeamId(e.target.value);
+  };
+
+  if (location.pathname === '/landing' || location.pathname === '/') {
+    return null;
+  }
+
+  return (
+    <header className="w-full bg-gray-800">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
+        <div className="flex items-center space-x-3">
+          <img src={logo} alt="HuddlUp Logo" className="h-8" />
+          <h1 className="text-xl font-bold">Design. Huddle. Dominate.</h1>
+        </div>
+        <nav className="flex flex-wrap gap-2 items-center">
+          <Link
+            to="/"
+            className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          >
+            Home
+          </Link>
+          <Link
+            to="/editor"
+            className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          >
+            <Home className="w-4 h-4 mr-1" /> Editor
+          </Link>
+          <Link
+            to="/library"
+            className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          >
+            <Book className="w-4 h-4 mr-1" /> Play Library
+          </Link>
+          <Link
+            to="/playbooks"
+            className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          >
+            <BookOpen className="w-4 h-4 mr-1" /> Playbooks
+          </Link>
+          {teams.length > 0 && (
+            <select
+              value={selectedTeamId}
+              onChange={handleChange}
+              className="bg-gray-700 text-white px-2 py-1 rounded text-sm"
+            >
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.teamName}
+                </option>
+              ))}
+            </select>
+          )}
+          {user ? (
+            <>
+              <span className="mx-2 text-sm">{user.email}</span>
+              <button
+                onClick={() => signOut(auth)}
+                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={openSignIn}
+              className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              Sign In
+            </button>
+          )}
+        </nav>
+      </div>
+    </header>
+  );
+};
+
+export default NavBar;

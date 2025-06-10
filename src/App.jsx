@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
 import SignInModal from './components/SignInModal';
-import logo from './assets/huddlup_logo_white_w_trans.png';
 import LandingPage from './LandingPage';
-import { Home, Book, BookOpen } from 'lucide-react';
+
+import { Home, Book, BookOpen, Users } from 'lucide-react';
+import TeamsPage from './pages/TeamsPage.js';
+
 
 const AppContent = ({ user, openSignIn }) => {
 
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
@@ -23,6 +24,7 @@ const AppContent = ({ user, openSignIn }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+
       {/* Header */}
       {location.pathname !== '/landing' && location.pathname !== '/' && (
       <header className="w-full bg-gray-800">
@@ -56,6 +58,12 @@ const AppContent = ({ user, openSignIn }) => {
             >
               <BookOpen className="w-4 h-4 mr-1" /> Playbooks
             </Link>
+            <Link
+              to="/teams"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <Users className="w-4 h-4 mr-1" /> Teams
+            </Link>
             {user ? (
               <>
                 <span className="mx-2 text-sm">{user.email}</span>
@@ -80,6 +88,7 @@ const AppContent = ({ user, openSignIn }) => {
       </header>
       )}
 
+
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
@@ -103,6 +112,7 @@ const AppContent = ({ user, openSignIn }) => {
             path="/playbooks"
             element={<PlaybookLibrary user={user} openSignIn={openSignIn} />}
           />
+          <Route path="/teams" element={<TeamsPage />} />
         </Routes>
       </main>
     </div>
