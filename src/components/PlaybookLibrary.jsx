@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
+import { ChevronUp, ChevronDown, PlusCircle, Trash2, Lock, Unlock } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
+import AlertModal from './AlertModal';
 import { db, auth } from '../firebase';
-import { collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
 
 const PlaybookLibrary = ({ user, openSignIn }) => {
@@ -13,6 +14,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [printBookId, setPrintBookId] = useState(null);
   const [playsMap, setPlaysMap] = useState({});
   const [deleteId, setDeleteId] = useState(null);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
   const { selectedTeamId, teams } = useTeamsContext();
 
 
@@ -25,7 +27,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
           if (key.startsWith('Playbook-')) {
             try {
               const book = JSON.parse(localStorage.getItem(key));
-              books.push(book);
+              books.push({ ...book, locked: book.locked || false });
             } catch {
               // ignore malformed data
             }
@@ -40,7 +42,10 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
         collection(db, 'users', auth.currentUser.uid, 'playbooks')
       );
       const arr = [];
-      snap.forEach((d) => arr.push(d.data()));
+      snap.forEach((d) => {
+        const data = d.data();
+        arr.push({ ...data, locked: data.locked || false });
+      });
       arr.sort((a, b) => (a.order || 0) - (b.order || 0));
       setPlaybooks(arr);
     };
@@ -83,6 +88,10 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     setPlaybooks((prev) =>
       prev.map((book) => {
         if (book.id !== bookId) return book;
+        if (book.locked) {
+          setShowUnlockModal(true);
+          return book;
+        }
         const ids = [...book.playIds];
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= ids.length) return book;
@@ -103,7 +112,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     if (!name) return;
     const order = playbooks.length ? Math.max(...playbooks.map(b => b.order || 0)) + 1 : 0;
     const id = `Playbook-${Date.now()}`;
-    const book = { id, name, playIds: [], order };
+    const book = { id, name, playIds: [], order, locked: false };
     if (auth.currentUser) {
       await setDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', id), book);
     } else {
@@ -113,6 +122,11 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   };
 
   const deletePlaybook = async (id) => {
+    const book = playbooks.find(b => b.id === id);
+    if (book && book.locked) {
+      setShowUnlockModal(true);
+      return;
+    }
     if (auth.currentUser) {
       await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', id));
     } else {
@@ -124,6 +138,10 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const movePlaybook = async (index, direction) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= playbooks.length) return;
+    if (playbooks[index].locked || playbooks[newIndex].locked) {
+      setShowUnlockModal(true);
+      return;
+    }
     const books = [...playbooks];
     [books[index], books[newIndex]] = [books[newIndex], books[index]];
     books.forEach((b, i) => {
@@ -139,6 +157,20 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
 
   const toggleCollapse = (id) => {
     setCollapsed(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleLock = async (bookId, locked) => {
+    if (auth.currentUser) {
+      const ref = doc(db, 'users', auth.currentUser.uid, 'playbooks', bookId);
+      await updateDoc(ref, { locked: !locked });
+    } else {
+      const item = JSON.parse(localStorage.getItem(bookId));
+      if (item) {
+        item.locked = !locked;
+        localStorage.setItem(bookId, JSON.stringify(item));
+      }
+    }
+    setPlaybooks(prev => prev.map(b => (b.id === bookId ? { ...b, locked: !locked } : b)));
   };
 
   const confirmDelete = async () => {
@@ -373,7 +405,19 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
                 Print
               </button>
               <button
-                onClick={() => setDeleteId(book.id)}
+                onClick={() => toggleLock(book.id, book.locked)}
+                className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-sm"
+              >
+                {book.locked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={() => {
+                  if (book.locked) {
+                    setShowUnlockModal(true);
+                    return;
+                  }
+                  setDeleteId(book.id);
+                }}
                 className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
               >
                 <Trash2 className="w-4 h-4" />
@@ -425,6 +469,9 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       })}
       {showPrintModal && (
         <PrintOptionsModal onClose={() => setShowPrintModal(false)} onPrint={handlePrintConfirm} />
+      )}
+      {showUnlockModal && (
+        <AlertModal message="Unlock this playbook to edit" onClose={() => setShowUnlockModal(false)} />
       )}
       {deleteId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
