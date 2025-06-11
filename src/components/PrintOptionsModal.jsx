@@ -22,8 +22,13 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
         playsPerPage: parseInt(playsPerPage, 10),
         includeTitle,
         includeNumber,
-                thicknessMultiplier: THICKNESS_MULTIPLIER,
+        thicknessMultiplier: THICKNESS_MULTIPLIER,
+      });
 
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.print();
+        });
       });
     }
   };
