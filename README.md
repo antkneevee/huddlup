@@ -32,6 +32,14 @@ Run `npm run setup` (or `npm ci`) to install all dependencies, then start the de
 
 Lint the project with `npm run lint`.
 
+## Print Options
+
+Use the `Print` button in the playbook library to open the `PrintOptionsModal`.
+Choose between wristband, playsheet or playbook layouts and configure play
+titles and numbers. The `PrintWrapper` component can be used to apply a
+`print-ready` class to the page before calling `window.print()` so that any
+`@media print` styles are applied.
+
 
 ## License
 

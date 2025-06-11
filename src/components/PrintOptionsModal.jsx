@@ -8,7 +8,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
   const [layout, setLayout] = useState('4');
   const [width, setWidth] = useState('4');
   const [height, setHeight] = useState('2');
-  const [playsPerPage, setPlaysPerPage] = useState('8');
+  const [playsPerPage, setPlaysPerPage] = useState('12');
   const [includeTitle, setIncludeTitle] = useState(true);
   const [includeNumber, setIncludeNumber] = useState(true);
 
@@ -56,8 +56,17 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
             />{' '}
             Play Sheets
           </label>
+          <label className="ml-4">
+            <input
+              type="radio"
+              value="playbook"
+              checked={type === 'playbook'}
+              onChange={() => setType('playbook')}
+            />{' '}
+            Playbook
+          </label>
         </div>
-        {type === 'wristband' ? (
+        {type === 'wristband' && (
           <>
             <div className="mb-2">
               <label className="block mb-1">Layout</label>
@@ -102,7 +111,9 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
               </div>
             </div>
           </>
-        ) : (
+        )}
+
+        {type === 'playsheet' && (
           <div className="mb-2">
             <label className="block mb-1">Plays Per Page</label>
             <select
@@ -110,13 +121,17 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
               onChange={(e) => setPlaysPerPage(e.target.value)}
               className="w-full p-1 rounded border"
             >
-              <option value="8">8</option>
               <option value="12">12</option>
-              <option value="16">16</option>
-              <option value="20">20</option>
+              <option value="18">18</option>
               <option value="24">24</option>
             </select>
           </div>
+        )}
+
+        {type === 'playbook' && (
+          <p className="mb-2 text-sm">
+            Each play will be printed on its own page with coaching notes.
+          </p>
         )}
         <div className="mb-2 flex gap-4">
           <label className="flex items-center">
