@@ -43,13 +43,13 @@ const TeamPlaybooksModal = ({ team, onClose }) => {
 
   const handleSave = async () => {
     await editTeam(team.id, { playbooks: selectedIds });
-    onClose();
+    onClose(true);
   };
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={onClose}
+      onClick={() => onClose(false)}
     >
       <div
         className="bg-white text-black rounded p-4 w-full max-w-sm"
@@ -72,7 +72,7 @@ const TeamPlaybooksModal = ({ team, onClose }) => {
           )}
         </div>
         <div className="flex justify-end gap-2 mt-2">
-          <button onClick={onClose} className="px-3 py-1 rounded bg-gray-300">
+          <button onClick={() => onClose(false)} className="px-3 py-1 rounded bg-gray-300">
             Cancel
           </button>
           <button
