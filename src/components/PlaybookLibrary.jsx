@@ -250,7 +250,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       </style>
     `;
 
-    w.document.write(`<html><head><title>${book.name}</title>${style}</head><body>`);
+    w.document.write(`<!doctype html><html><head><title>${book.name}</title>${style}</head><body>`);
 
     if (isWrist) {
       for (let i = 0; i < plays.length; i += layout) {
