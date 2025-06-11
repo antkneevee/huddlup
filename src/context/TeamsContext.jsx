@@ -47,9 +47,13 @@ export const TeamsContextProvider = ({ children }) => {
     return team;
   };
 
-  const editTeam = async (teamId, { teamName, logoFile }) => {
+  const editTeam = async (
+    teamId,
+    { teamName, logoFile, playbooks } = {}
+  ) => {
     const updates = {};
     if (teamName !== undefined) updates.teamName = teamName;
+    if (playbooks !== undefined) updates.playbooks = playbooks;
     if (logoFile) {
       const url = await uploadTeamLogo(teamId, logoFile);
       updates.teamLogoUrl = url;
