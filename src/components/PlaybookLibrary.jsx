@@ -290,9 +290,13 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       }
     }
 
-      w.document.write('</body></html>');
-      w.document.close();
-      setTimeout(() => { w.focus(); w.print(); w.close(); }, 300);
+    w.addEventListener('load', () => {
+      w.focus();
+      w.print();
+      w.close();
+    });
+    w.document.write('</body></html>');
+    w.document.close();
 
     setPrintBookId(null);
   };
