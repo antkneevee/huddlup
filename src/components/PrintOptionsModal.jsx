@@ -39,12 +39,6 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
         includeNumber,
         thicknessMultiplier: THICKNESS_MULTIPLIER,
       });
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.print();
-        });
-      });
     }
   };
 
