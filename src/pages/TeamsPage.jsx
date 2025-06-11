@@ -14,7 +14,9 @@ const TeamsPage = ({ user, openSignIn }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [playbookTeam, setPlaybookTeam] = useState(null);
   const [playbooks, setPlaybooks] = useState([]);
+  const [playsMap, setPlaysMap] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -49,6 +51,21 @@ const TeamsPage = ({ user, openSignIn }) => {
     fetchBooks();
   }, [user]);
 
+  useEffect(() => {
+    const fetchPlays = async () => {
+      if (!auth.currentUser) return;
+      const snap = await getDocs(
+        collection(db, 'users', auth.currentUser.uid, 'plays')
+      );
+      const obj = {};
+      snap.forEach((d) => {
+        obj[d.id] = d.data();
+      });
+      setPlaysMap(obj);
+    };
+    fetchPlays();
+  }, [user]);
+
   const openCreate = () => {
     if (!auth.currentUser) {
       openSignIn && openSignIn();
@@ -73,6 +90,10 @@ const TeamsPage = ({ user, openSignIn }) => {
       return;
     }
     setPlaybookTeam(team);
+  };
+
+  const toggleExpanded = (id) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleSave = async (data) => {
@@ -115,46 +136,101 @@ const TeamsPage = ({ user, openSignIn }) => {
           Add Team
         </button>
       </div>
-      {teams.map((team) => (
-        <div key={team.id} className="bg-gray-800 p-4 rounded mb-2 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {team.teamLogoUrl && (
-              <img src={team.teamLogoUrl} alt="Team Logo" className="h-12 w-12 object-cover rounded" />
-            )}
-            <div>
-              <span className="font-bold text-lg">{team.teamName}</span>
-              {team.playbooks && team.playbooks.length > 0 && (
-                <div className="text-sm text-gray-300">
-                  {team.playbooks
-                    .map((id) => playbooks.find((pb) => pb.id === id)?.name)
-                    .filter(Boolean)
-                    .join(', ')}
+      {teams.map((team) => {
+        const bookNames =
+          team.playbooks && team.playbooks.length > 0
+            ? team.playbooks
+                .map((id) => playbooks.find((pb) => pb.id === id)?.name)
+                .filter(Boolean)
+                .join(', ')
+            : '';
+        return (
+          <div key={team.id} className="bg-gray-800 p-4 rounded mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {team.teamLogoUrl && (
+                  <img
+                    src={team.teamLogoUrl}
+                    alt="Team Logo"
+                    className="h-12 w-12 object-cover rounded"
+                  />
+                )}
+                <div>
+                  <span className="font-bold text-lg">{team.teamName}</span>
+                  {bookNames && (
+                    <div className="text-sm text-gray-300">{bookNames}</div>
+                  )}
                 </div>
-              )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => openEdit(team)}
+                  className="bg-blue-600 hover:bg-blue-500 px-2 py-1 rounded text-sm"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => openPlaybooks(team)}
+                  className="bg-green-600 hover:bg-green-500 px-2 py-1 rounded text-sm"
+                >
+                  Playbooks
+                </button>
+                <button
+                  onClick={() => toggleExpanded(team.id)}
+                  className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-sm"
+                >
+                  {expanded[team.id] ? 'Hide' : 'View'}
+                </button>
+                <button
+                  onClick={() => setDeleteId(team.id)}
+                  className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
+            {expanded[team.id] && (
+              <div className="mt-4 space-y-4">
+                {team.playbooks && team.playbooks.length > 0 ? (
+                  team.playbooks.map((pbId) => {
+                    const book = playbooks.find((pb) => pb.id === pbId);
+                    if (!book) return null;
+                    return (
+                      <div key={pbId}>
+                        <h3 className="font-semibold mb-2">{book.name}</h3>
+                        <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+                          {book.playIds.map((pid) => {
+                            const play = playsMap[pid];
+                            if (!play) return null;
+                            return (
+                              <div key={pid} className="bg-gray-700 p-1 rounded">
+                                {play.image ? (
+                                  <img
+                                    src={play.image}
+                                    alt={play.name}
+                                    className="w-full h-24 object-contain rounded bg-white"
+                                  />
+                                ) : (
+                                  <div className="w-full h-24 flex items-center justify-center bg-gray-600 text-gray-300 text-xs rounded">
+                                    No Image
+                                  </div>
+                                )}
+                                <div className="text-xs mt-1 truncate" title={play.name}>{play.name}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-sm text-gray-300">No playbooks assigned.</div>
+                )}
+              </div>
+            )}
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => openEdit(team)}
-              className="bg-blue-600 hover:bg-blue-500 px-2 py-1 rounded text-sm"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => openPlaybooks(team)}
-              className="bg-green-600 hover:bg-green-500 px-2 py-1 rounded text-sm"
-            >
-              Playbooks
-            </button>
-            <button
-              onClick={() => setDeleteId(team.id)}
-              className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
+        );
+      })}
       {showForm && (
         <TeamFormModal
           initialData={editing || {}}

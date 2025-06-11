@@ -28,9 +28,11 @@ VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 All of these variables are required. The application will throw an error on
 startup if any values are missing.
 
-Run `npm run setup` (or `npm ci`) to install all dependencies, then start the dev server with `npm run dev`.
+Run `npm run setup` (or `npm ci`) to install all dependencies before running any
+tests or lint commands. Start the dev server with `npm run dev`.
 
-Lint the project with `npm run lint`.
+Lint the project with `npm run lint` and run the component tests with
+`npm test`.
 
 ## Print Options
 
