@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 
 const PrintWrapper = ({ printReady, children }) => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (printReady) {
       document.body.classList.add('print-ready');
     } else {

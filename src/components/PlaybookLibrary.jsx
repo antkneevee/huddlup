@@ -201,8 +201,6 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
         }))
     );
 
-    const w = window.open('', '_blank');
-    if (!w) return;
 
     const includeTitle = options.includeTitle !== false;
     const includeNumber = options.includeNumber !== false;
@@ -241,18 +239,21 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       <style>
         body{margin:0;padding:10px;font-family:sans-serif;}
         .page{page-break-after:always;margin-bottom:20px;}
-
-                .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${columns}, ${cellWidth}in);grid-template-rows:repeat(2, ${cellHeight}in);width:${gridWidth}in;height:${gridHeight}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
+        .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${columns}, ${cellWidth}in);grid-template-rows:repeat(2, ${cellHeight}in);width:${gridWidth}in;height:${gridHeight}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
         .play{position:relative;border:1px solid #000;${isWrist ? `width:${cellWidth}in;height:${cellHeight}in;` : 'aspect-ratio:4/3;padding:2px;'}text-align:center;}
         .notes{margin-top:8px;font-size:12px;text-align:left;}
         .label{position:absolute;top:0;left:0;display:flex;width:100%;z-index:1;}
-                .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
+        .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
         .title{background:#eee;color:#000;padding:2px 4px;font-size:10px;flex:1;display:flex;align-items:center;}
         img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated;}
+        @media print { body{-webkit-print-color-adjust:exact;} }
       </style>
     `;
 
-    w.document.write(`<!doctype html><html><head><title>${book.name}</title>${style}</head><body>`);
+    const htmlStart = `<!doctype html><html><head><title>${book.name}</title>${style}</head><body>`;
+    const w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(htmlStart);
 
     if (isWrist) {
       for (let i = 0; i < plays.length; i += layout) {
