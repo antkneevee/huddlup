@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
 import TeamFormModal from '../components/TeamFormModal.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
+import TeamPlaybooksModal from '../components/TeamPlaybooksModal.jsx';
 
 import { auth } from '../firebase';
 
@@ -10,6 +11,7 @@ const TeamsPage = ({ user, openSignIn }) => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const [playbookTeam, setPlaybookTeam] = useState(null);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -33,6 +35,14 @@ const TeamsPage = ({ user, openSignIn }) => {
     }
     setEditing(team);
     setShowForm(true);
+  };
+
+  const openPlaybooks = (team) => {
+    if (!auth.currentUser) {
+      openSignIn && openSignIn();
+      return;
+    }
+    setPlaybookTeam(team);
   };
 
   const handleSave = async (data) => {
@@ -83,6 +93,12 @@ const TeamsPage = ({ user, openSignIn }) => {
               Edit
             </button>
             <button
+              onClick={() => openPlaybooks(team)}
+              className="bg-green-600 hover:bg-green-500 px-2 py-1 rounded text-sm"
+            >
+              Playbooks
+            </button>
+            <button
               onClick={() => setDeleteId(team.id)}
               className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
             >
@@ -105,6 +121,12 @@ const TeamsPage = ({ user, openSignIn }) => {
           onCancel={() => setDeleteId(null)}
           onConfirm={handleDelete}
           confirmText="Delete"
+        />
+      )}
+      {playbookTeam && (
+        <TeamPlaybooksModal
+          team={playbookTeam}
+          onClose={() => setPlaybookTeam(null)}
         />
       )}
     </div>
