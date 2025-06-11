@@ -4,7 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
 
 const TeamPlaybooksModal = ({ team, onClose }) => {
-  const { editTeam } = useTeamsContext();
+  const { addPlaybookToTeam, removePlaybookFromTeam } = useTeamsContext();
   const [playbooks, setPlaybooks] = useState([]);
   const [selectedIds, setSelectedIds] = useState(team.playbooks || []);
 
@@ -42,7 +42,13 @@ const TeamPlaybooksModal = ({ team, onClose }) => {
   };
 
   const handleSave = async () => {
-    await editTeam(team.id, { playbooks: selectedIds });
+    const current = team.playbooks || [];
+    const toAdd = selectedIds.filter((id) => !current.includes(id));
+    const toRemove = current.filter((id) => !selectedIds.includes(id));
+    await Promise.all([
+      ...toAdd.map((id) => addPlaybookToTeam(team.id, { id })),
+      ...toRemove.map((id) => removePlaybookFromTeam(team.id, id)),
+    ]);
     onClose(true);
   };
 

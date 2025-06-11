@@ -7,6 +7,9 @@ import {
   editTeam as fbEditTeam,
   deleteTeam as fbDeleteTeam,
   uploadTeamLogo,
+  getTeamPlaybooks,
+  addPlaybookToTeam as fbAddPlaybookToTeam,
+  removePlaybookFromTeam as fbRemovePlaybookFromTeam,
 } from '../firebase/teams';
 
 const TeamsContext = createContext({
@@ -29,15 +32,22 @@ export const TeamsContextProvider = ({ children }) => {
       return;
     }
     const data = await getTeamsByUser(user.uid);
-    setTeams(data);
-    if (data.length && !selectedTeamId) {
-      setSelectedTeamId(data[0].id);
+    const withPlaybooks = await Promise.all(
+      data.map(async (t) => {
+        const pbs = await getTeamPlaybooks(t.id);
+        return { ...t, playbooks: pbs.map((p) => p.id) };
+      })
+    );
+    setTeams(withPlaybooks);
+    if (withPlaybooks.length && !selectedTeamId) {
+      setSelectedTeamId(withPlaybooks[0].id);
     }
   };
 
   const createTeam = async (name, logoFile) => {
     if (!auth.currentUser) return null;
     const team = await fbCreateTeam(name, null, auth.currentUser.uid);
+    team.playbooks = [];
     if (logoFile) {
       const url = await uploadTeamLogo(team.id, logoFile);
       await fbEditTeam(team.id, { teamLogoUrl: url });
@@ -49,11 +59,10 @@ export const TeamsContextProvider = ({ children }) => {
 
   const editTeam = async (
     teamId,
-    { teamName, logoFile, playbooks } = {}
+    { teamName, logoFile } = {}
   ) => {
     const updates = {};
     if (teamName !== undefined) updates.teamName = teamName;
-    if (playbooks !== undefined) updates.playbooks = playbooks;
     if (logoFile) {
       const url = await uploadTeamLogo(teamId, logoFile);
       updates.teamLogoUrl = url;
@@ -72,6 +81,26 @@ export const TeamsContextProvider = ({ children }) => {
     if (selectedTeamId === teamId) setSelectedTeamId('');
   };
 
+  const addPlaybookToTeam = async (teamId, playbook) => {
+    await fbAddPlaybookToTeam(teamId, playbook);
+    setTeams((prev) =>
+      prev.map((t) =>
+        t.id === teamId ? { ...t, playbooks: [...(t.playbooks || []), playbook.id] } : t
+      )
+    );
+  };
+
+  const removePlaybookFromTeam = async (teamId, playbookId) => {
+    await fbRemovePlaybookFromTeam(teamId, playbookId);
+    setTeams((prev) =>
+      prev.map((t) =>
+        t.id === teamId
+          ? { ...t, playbooks: (t.playbooks || []).filter((id) => id !== playbookId) }
+          : t
+      )
+    );
+  };
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => loadTeams(u));
     return unsub;
@@ -87,6 +116,8 @@ export const TeamsContextProvider = ({ children }) => {
         createTeam,
         editTeam,
         deleteTeam,
+        addPlaybookToTeam,
+        removePlaybookFromTeam,
       }}
     >
       {children}

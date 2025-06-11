@@ -9,6 +9,7 @@ import {
   query,
   where,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -17,7 +18,6 @@ export const createTeam = async (teamName, teamLogoUrl, userId) => {
     teamName,
     createdBy: userId,
     createdAt: serverTimestamp(),
-    playbooks: [],
   };
   if (teamLogoUrl) {
     data.teamLogoUrl = teamLogoUrl;
@@ -48,4 +48,22 @@ export const getTeamsByUser = async (userId) => {
   const teams = [];
   snap.forEach((d) => teams.push({ id: d.id, ...d.data() }));
   return teams;
+};
+
+export const getTeamPlaybooks = async (teamId) => {
+  const snap = await getDocs(collection(db, 'teams', teamId, 'playbooks'));
+  const arr = [];
+  snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
+  return arr;
+};
+
+export const addPlaybookToTeam = async (teamId, playbookData) => {
+  if (!teamId || !playbookData?.id) return;
+  const ref = doc(db, 'teams', teamId, 'playbooks', playbookData.id);
+  await setDoc(ref, playbookData);
+};
+
+export const removePlaybookFromTeam = async (teamId, playbookId) => {
+  if (!teamId || !playbookId) return;
+  await deleteDoc(doc(db, 'teams', teamId, 'playbooks', playbookId));
 };

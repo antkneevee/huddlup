@@ -14,8 +14,12 @@ test('TeamPlaybooksModal saves selected playbooks', async () => {
     'Playbook-1',
     JSON.stringify({ id: 'Playbook-1', name: 'PB1', playIds: [] })
   );
-  const editTeam = jest.fn();
-  TeamsContext.useTeamsContext.mockReturnValue({ editTeam });
+  const addPlaybookToTeam = jest.fn();
+  const removePlaybookFromTeam = jest.fn();
+  TeamsContext.useTeamsContext.mockReturnValue({
+    addPlaybookToTeam,
+    removePlaybookFromTeam,
+  });
 
   const team = { id: 'team1', playbooks: [] };
   const onClose = jest.fn();
@@ -25,7 +29,7 @@ test('TeamPlaybooksModal saves selected playbooks', async () => {
   fireEvent.click(checkbox);
   fireEvent.click(screen.getByText('Save'));
 
-  await waitFor(() => expect(editTeam).toHaveBeenCalledWith('team1', { playbooks: ['Playbook-1'] }));
+  await waitFor(() => expect(addPlaybookToTeam).toHaveBeenCalledWith('team1', { id: 'Playbook-1' }));
   expect(onClose).toHaveBeenCalledWith(true);
 
   localStorage.clear();
