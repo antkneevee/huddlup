@@ -18,13 +18,15 @@ test('TeamPlaybooksModal saves selected playbooks', async () => {
   TeamsContext.useTeamsContext.mockReturnValue({ editTeam });
 
   const team = { id: 'team1', playbooks: [] };
-  render(<TeamPlaybooksModal team={team} onClose={() => {}} />);
+  const onClose = jest.fn();
+  render(<TeamPlaybooksModal team={team} onClose={onClose} />);
 
   const checkbox = await screen.findByLabelText('PB1');
   fireEvent.click(checkbox);
   fireEvent.click(screen.getByText('Save'));
 
   await waitFor(() => expect(editTeam).toHaveBeenCalledWith('team1', { playbooks: ['Playbook-1'] }));
+  expect(onClose).toHaveBeenCalledWith(true);
 
   localStorage.clear();
 });
