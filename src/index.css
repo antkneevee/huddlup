@@ -10,3 +10,21 @@
   );
   background-size: 20px 20px;
 }
+
+/* Print styling */
+.no-print {
+  display: none !important;
+}
+
+@media print {
+  header,
+  .modal,
+  .no-print {
+    display: none !important;
+  }
+
+  body.print-ready {
+    margin: 0;
+    padding: 0;
+  }
+}

@@ -13,13 +13,28 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
   const [includeNumber, setIncludeNumber] = useState(true);
 
   const handleSubmit = () => {
+    const layoutNum = parseInt(layout, 10);
+    const widthNum = parseFloat(width);
+    const heightNum = parseFloat(height);
+    const perPageNum = parseInt(playsPerPage, 10);
+
+    if (
+      Number.isNaN(layoutNum) ||
+      Number.isNaN(widthNum) ||
+      Number.isNaN(heightNum) ||
+      Number.isNaN(perPageNum)
+    ) {
+      alert('Please enter valid numeric values.');
+      return;
+    }
+
     if (onPrint) {
       onPrint({
         type,
-        layout: parseInt(layout, 10),
-        width: parseFloat(width),
-        height: parseFloat(height),
-        playsPerPage: parseInt(playsPerPage, 10),
+        layout: layoutNum,
+        width: widthNum,
+        height: heightNum,
+        playsPerPage: perPageNum,
         includeTitle,
         includeNumber,
         thicknessMultiplier: THICKNESS_MULTIPLIER,
