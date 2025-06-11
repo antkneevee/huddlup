@@ -242,7 +242,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
         .page{page-break-after:always;margin-bottom:20px;}
 
                 .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${columns}, ${cellWidth}in);grid-template-rows:repeat(2, ${cellHeight}in);width:${gridWidth}in;height:${gridHeight}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
-        .play{position:relative;border:1px solid #000;${isWrist ? `width:${cellWidth}in;height:${cellHeight}in;` : 'padding:2px;'}text-align:center;}
+        .play{position:relative;border:1px solid #000;${isWrist ? `width:${cellWidth}in;height:${cellHeight}in;` : 'aspect-ratio:4/3;padding:2px;'}text-align:center;}
         .label{position:absolute;top:0;left:0;display:flex;width:100%;z-index:1;}
                 .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
         .title{background:#eee;color:#000;padding:2px 4px;font-size:10px;flex:1;display:flex;align-items:center;}
