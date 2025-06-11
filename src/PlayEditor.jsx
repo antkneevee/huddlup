@@ -7,6 +7,7 @@ import SaveAsModal from "./components/SaveAsModal";
 import SaveModal from "./components/SaveModal";
 import Toast from "./components/Toast";
 import ModalPortal from "./components/ModalPortal";
+import LoadingSpinner from "./components/LoadingSpinner";
 import { User, ArrowRight, Trash2, StickyNote } from "lucide-react";
 import huddlupLogo from "./assets/huddlup_logo_2.svg";
 import { THICKNESS_MULTIPLIER } from "./components/PrintOptionsModal";
@@ -97,6 +98,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
@@ -217,6 +219,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return;
     }
 
+    setIsSaving(true);
     try {
       const dataURL = await getExportDataUrl(4 / 3);
       const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
@@ -256,6 +259,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     } catch (err) {
       console.error('Failed to save play', err);
       setSaveError('Failed to save play.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -272,6 +277,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const handleSaveAsConfirm = async () => {
     const newName = saveAsName.trim() || playName;
 
+    setIsSaving(true);
     try {
       const dataURL = await getExportDataUrl(4 / 3);
       const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
@@ -321,6 +327,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     } catch (err) {
       console.error('Failed to save play', err);
       setSaveError('Failed to save play.');
+    } finally {
+      setIsSaving(false);
     }
 
   };
@@ -927,6 +935,12 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       {showToast && (
         <ModalPortal>
           <Toast message="Play saved to library!" />
+        </ModalPortal>
+      )}
+
+      {isSaving && (
+        <ModalPortal>
+          <LoadingSpinner />
         </ModalPortal>
       )}
     </div>
