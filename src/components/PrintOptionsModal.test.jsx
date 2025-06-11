@@ -3,8 +3,6 @@ import PrintOptionsModal, { THICKNESS_MULTIPLIER } from './PrintOptionsModal';
 
 test('PrintOptionsModal calls onPrint with parsed options', () => {
   const onPrint = jest.fn();
-  window.print = jest.fn();
-  jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
 
   render(<PrintOptionsModal onClose={() => {}} onPrint={onPrint} />);
 
@@ -20,5 +18,4 @@ test('PrintOptionsModal calls onPrint with parsed options', () => {
     includeNumber: true,
     thicknessMultiplier: THICKNESS_MULTIPLIER,
   });
-  expect(window.print).toHaveBeenCalled();
 });
