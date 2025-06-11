@@ -38,7 +38,7 @@ const SignInModal = ({ onClose }) => {
           <X className="w-5 h-5" />
         </button>
         <div className="text-center mb-4">
-          <img src={logo} alt="HuddlUp Logo" className="h-10 mx-auto" />
+          <img src={logo} alt="huddlup logo" className="h-10 mx-auto" />
         </div>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
