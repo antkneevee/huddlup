@@ -82,7 +82,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
               <select
                 value={layout}
                 onChange={(e) => setLayout(e.target.value)}
-                className="w-full p-1 rounded border"
+                className="w-full p-2 rounded border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="4">4 plays</option>
                 <option value="6">6 plays</option>
@@ -95,7 +95,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
                 <select
                   value={width}
                   onChange={(e) => setWidth(e.target.value)}
-                  className="w-full p-1 rounded border"
+                  className="w-full p-2 rounded border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="4">4"</option>
                   <option value="4.25">4.25"</option>
@@ -109,7 +109,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
                 <select
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
-                  className="w-full p-1 rounded border"
+                  className="w-full p-2 rounded border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="2">2"</option>
                   <option value="2.25">2.25"</option>
@@ -128,7 +128,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
             <select
               value={playsPerPage}
               onChange={(e) => setPlaysPerPage(e.target.value)}
-              className="w-full p-1 rounded border"
+              className="w-full p-2 rounded border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="12">12</option>
               <option value="18">18</option>

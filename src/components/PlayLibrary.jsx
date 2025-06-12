@@ -133,7 +133,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
         <select
           value={itemsPerPage}
           onChange={(e) => setItemsPerPage(Number(e.target.value))}
-          className="p-2 rounded bg-gray-700 text-white"
+          className="p-3 rounded bg-gray-700 text-white border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value={25}>Show 25</option>
           <option value={50}>Show 50</option>

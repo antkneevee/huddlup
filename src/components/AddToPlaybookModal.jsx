@@ -94,7 +94,7 @@ const AddToPlaybookModal = ({ playIds = [], playId, onClose }) => {
             <select
               value={selectedBookId}
               onChange={(e) => setSelectedBookId(e.target.value)}
-              className="w-full p-1 rounded mb-2 border"
+              className="w-full p-2 rounded mb-2 border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {playbooks.map((book) => (
                 <option key={book.id} value={book.id}>

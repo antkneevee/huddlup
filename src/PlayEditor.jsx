@@ -660,7 +660,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                   type="text"
                   value={players[selectedPlayerIndex].id}
                   onChange={(e) => handleLabelChange(e.target.value)}
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <label className="block mt-2 mb-1">Color</label>
                 <div className="flex gap-2 flex-wrap">
@@ -677,7 +677,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                 <select
                   value={players[selectedPlayerIndex].shape}
                   onChange={(e) => handleShapeChange(e.target.value)}
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {shapeOptions.map((shape) => (
                     <option key={shape} value={shape}>
@@ -706,7 +706,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             <select
               value={defenseFormation}
               onChange={(e) => setDefenseFormation(e.target.value)}
-              className="w-full p-1 rounded text-white bg-gray-700"
+              className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="No">No</option>
               <option value="1-3-1">1-3-1</option>
@@ -757,7 +757,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                 <select
                   value={routes[selectedRouteIndex].style}
                   onChange={(e) => updateRouteProperty("style", e.target.value)}
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="solid">Solid</option>
                   <option value="dashed">Dashed</option>
@@ -772,7 +772,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                       parseInt(e.target.value, 10),
                     )
                   }
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value={5}>Thin</option>
                   <option value={7}>Default</option>
@@ -785,7 +785,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                   onChange={(e) =>
                     updateRouteProperty("endMarker", e.target.value)
                   }
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {endMarkerOptions.map((marker) => (
                     <option key={marker} value={marker}>
@@ -826,7 +826,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                   type="text"
                   value={notes[selectedNoteIndex].text}
                   onChange={(e) => updateNoteProperty("text", e.target.value)}
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <label className="block mt-2 mb-1">Font Color</label>
                 <select
@@ -834,7 +834,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                   onChange={(e) =>
                     updateNoteProperty("fontColor", e.target.value)
                   }
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="#000000">Black</option>
                   <option value="#FFFFFF">White</option>
@@ -845,7 +845,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
                   onChange={(e) =>
                     updateNoteProperty("fontSize", parseInt(e.target.value))
                   }
-                  className="w-full p-1 rounded text-white bg-gray-700"
+                  className="w-full p-2 rounded text-white bg-gray-700 border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value={12}>Small</option>
                   <option value={16}>Medium</option>
