@@ -49,12 +49,12 @@ const LandingPage = () => {
             <p>Create and customize flag football plays with ease.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Collaborate &amp; Share</h3>
-            <p>Work with your team and share strategies instantly.</p>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Explore &amp; Share</h3>
+            <p>Get ideas from curated playbooks and a global library, then easily share with your team.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Win Games</h3>
-            <p>Execute your plays on the field and dominate the game.</p>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Play to Win</h3>
+            <p>Put your plays into action and lead your team to victory.</p>
           </div>
         </div>
       </section>
