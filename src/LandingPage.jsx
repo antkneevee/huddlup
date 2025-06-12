@@ -9,7 +9,7 @@ const LandingPage = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       {/* Header */}
       <header className="w-full bg-gray-800">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
+        <div className="w-full flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
           <img src={logo} alt="huddlup logo" className="h-8" />
             <h1 className="text-xl font-bold">Flag Football Play Designer</h1>
