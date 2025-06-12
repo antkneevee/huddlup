@@ -33,8 +33,8 @@ const Canvas = () => {
       width={800}
       height={600}
       onMouseDown={handleMouseDown}
-      onMousemove={handleMouseMove}
-      onMouseup={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
       style={{ background: '#ffffff', border: '1px solid #ccc' }}
     >
       <Layer>
