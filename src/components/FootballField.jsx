@@ -234,7 +234,11 @@ const FootballField = ({
   };
 
   return (
-    <div ref={containerRef} className="w-full overflow-x-auto">
+    <div
+      ref={containerRef}
+      className="w-full overflow-x-auto"
+      style={{ touchAction: 'none' }}
+    >
     <Stage
       ref={localStageRef}
       width={width}
@@ -242,7 +246,12 @@ const FootballField = ({
       scaleX={scale}
       scaleY={scale}
       className="bg-white border border-gray-300"
-      onClick={handleStageClick}
+      onPointerDown={(e) => {
+        if (e.evt.pointerType !== 'touch') handleStageClick(e);
+      }}
+      onPointerUp={(e) => {
+        if (e.evt.pointerType === 'touch') handleStageClick(e);
+      }}
     >
       <Layer ref={layerRef}>
         {/* Field Lines */}
