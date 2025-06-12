@@ -18,6 +18,7 @@ const AppContent = ({ user, openSignIn }) => {
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const isAdmin = user?.email === import.meta.env.VITE_SITE_OWNER_EMAIL;
 
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
@@ -66,6 +67,14 @@ const AppContent = ({ user, openSignIn }) => {
             >
               <Users className="w-4 h-4 mr-1" /> Teams
             </Link>
+            {isAdmin && (
+              <Link
+                to="/all-plays"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                <LibraryBig className="w-4 h-4 mr-1" /> All Plays
+              </Link>
+            )}
             {user ? (
               <>
                 <span className="mx-2 text-sm">{user.email}</span>
@@ -118,6 +127,19 @@ const AppContent = ({ user, openSignIn }) => {
             path="/teams"
             element={<TeamsPage user={user} openSignIn={openSignIn} />}
           />
+          {isAdmin && (
+            <Route
+              path="/all-plays"
+              element={
+                <PlayLibrary
+                  onSelectPlay={handleLoadPlay}
+                  user={user}
+                  openSignIn={openSignIn}
+                  adminMode
+                />
+              }
+            />
+          )}
         </Routes>
       </main>
     </div>

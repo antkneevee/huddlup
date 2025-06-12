@@ -4,9 +4,16 @@ import AlertModal from './AlertModal';
 import ConfirmModal from './ConfirmModal';
 import { Lock, Unlock, Trash2 } from 'lucide-react';
 import { db, auth } from '../firebase';
-import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import {
+  collection,
+  collectionGroup,
+  getDocs,
+  updateDoc,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 
-const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
+const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
   const [plays, setPlays] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(25);
@@ -21,19 +28,39 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
       openSignIn();
       return;
     }
+
     const fetchPlays = async () => {
-      const snap = await getDocs(
-        collection(db, 'users', auth.currentUser.uid, 'plays')
-      );
-      const arr = [];
-      snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
-      setPlays(arr);
+      if (adminMode) {
+        if (auth.currentUser.email !== import.meta.env.VITE_SITE_OWNER_EMAIL) {
+          setPlays([]);
+          return;
+        }
+        const snap = await getDocs(collectionGroup(db, 'plays'));
+        const arr = [];
+        snap.forEach((d) => {
+          const userId = d.ref.parent.parent.id;
+          arr.push({ id: d.id, userId, ...d.data() });
+        });
+        setPlays(arr);
+      } else {
+        const snap = await getDocs(
+          collection(db, 'users', auth.currentUser.uid, 'plays')
+        );
+        const arr = [];
+        snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
+        setPlays(arr);
+      }
     };
+
     fetchPlays();
-  }, [user]);
+  }, [user, adminMode]);
 
   if (!auth.currentUser) {
     return <div className="p-4">Please sign in to view your plays.</div>;
+  }
+
+  if (adminMode && auth.currentUser.email !== import.meta.env.VITE_SITE_OWNER_EMAIL) {
+    return <div className="p-4">Access denied.</div>;
   }
 
   const filteredPlays = plays.filter(play => {
@@ -121,28 +148,32 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
               >
                 Add
               </button>
-              <button
-                className="bg-gray-600 text-white p-1 rounded"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLock(play.id, play.locked);
-                }}
-              >
-                {play.locked ? (
-                  <Lock className="w-3 h-3" />
-                ) : (
-                  <Unlock className="w-3 h-3" />
-                )}
-              </button>
-              <button
-                className="bg-red-600 text-white p-1 rounded"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDeletePlayId(play.id);
-                }}
-              >
-                <Trash2 className="w-3 h-3" />
-              </button>
+              {!adminMode && (
+                <>
+                  <button
+                    className="bg-gray-600 text-white p-1 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLock(play.id, play.locked);
+                    }}
+                  >
+                    {play.locked ? (
+                      <Lock className="w-3 h-3" />
+                    ) : (
+                      <Unlock className="w-3 h-3" />
+                    )}
+                  </button>
+                  <button
+                    className="bg-red-600 text-white p-1 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeletePlayId(play.id);
+                    }}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </>
+              )}
             </div>
             {play.image ? (
               <img
@@ -156,6 +187,9 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
               </div>
             )}
             <h2 className="text-lg font-bold">{play.name}</h2>
+            {adminMode && (
+              <div className="text-xs text-gray-400 mb-1">User: {play.userId}</div>
+            )}
             <div className="flex flex-wrap gap-1 mt-1">
               {play.tags.map((tag, tagIndex) => (
                 <span
