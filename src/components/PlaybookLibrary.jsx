@@ -52,6 +52,14 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     fetchBooks();
   }, [user]);
 
+  useEffect(() => {
+    const obj = {};
+    playbooks.forEach((pb) => {
+      obj[pb.id] = false;
+    });
+    setCollapsed(obj);
+  }, [playbooks]);
+
   const displayedPlaybooks = useMemo(() => {
     if (!selectedTeamId) return playbooks;
     const team = teams.find((t) => t.id === selectedTeamId);
