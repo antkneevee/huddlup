@@ -11,6 +11,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import { User, ArrowRight, Trash2, StickyNote } from "lucide-react";
 import huddlupLogo from "./assets/huddlup_logo_2.svg";
 import { THICKNESS_MULTIPLIER } from "./components/PrintOptionsModal";
+import isIOS from "./utils/isIOS";
 
 const width = 800;
 const height = 600;
@@ -572,7 +573,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     });
   };
 
-  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isIos = isIOS();
 
   const handleExport = async (ratio) => {
     const url = await getExportDataUrl(ratio);
