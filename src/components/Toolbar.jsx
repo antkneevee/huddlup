@@ -78,7 +78,7 @@ const Toolbar = ({
         <select
           value={aspect}
           onChange={(e) => setAspect(e.target.value)}
-          className="bg-gray-700 text-white p-1 rounded"
+          className="bg-gray-700 text-white p-2 rounded border border-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="2">2.25 x 1.125</option>
           <option value="1.333">1.5 x 1.125</option>
