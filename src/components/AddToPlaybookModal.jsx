@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 
-const AddToPlaybookModal = ({ playId, onClose }) => {
+const AddToPlaybookModal = ({ playIds = [], playId, onClose }) => {
+  const ids = playIds.length ? playIds : playId ? [playId] : [];
   const [playbooks, setPlaybooks] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState('');
   const [newBookName, setNewBookName] = useState('');
@@ -37,9 +38,14 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
   }, []);
 
   const handleAdd = async () => {
+    if (ids.length === 0) {
+      onClose(false);
+      return;
+    }
+
     if (newBookName.trim()) {
       const id = `Playbook-${Date.now()}`;
-      const book = { id, name: newBookName.trim(), playIds: [playId] };
+      const book = { id, name: newBookName.trim(), playIds: ids };
       if (auth.currentUser) {
         await setDoc(
           doc(db, 'users', auth.currentUser.uid, 'playbooks', id),
@@ -60,14 +66,17 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
         const snap = await getDoc(ref);
         if (snap.exists()) {
           const data = snap.data();
-          if (!data.playIds.includes(playId)) {
-            await setDoc(ref, { ...data, playIds: [...data.playIds, playId] });
-          }
+          const newIds = Array.from(new Set([...data.playIds, ...ids]));
+          await setDoc(ref, { ...data, playIds: newIds });
         }
       } else {
         const book = JSON.parse(localStorage.getItem(selectedBookId));
-        if (book && !book.playIds.includes(playId)) {
-          book.playIds.push(playId);
+        if (book) {
+          ids.forEach((pid) => {
+            if (!book.playIds.includes(pid)) {
+              book.playIds.push(pid);
+            }
+          });
           localStorage.setItem(selectedBookId, JSON.stringify(book));
         }
       }
