@@ -8,7 +8,7 @@ import PlaybookLibrary from './components/PlaybookLibrary';
 import SignInModal from './components/SignInModal';
 import LandingPage from './LandingPage';
 
-import { Home, Book, BookOpen, Users } from 'lucide-react';
+import { House, LibraryBig, LogOut, BookOpen, Users } from 'lucide-react';
 import TeamsPage from './pages/TeamsPage.jsx';
 import logo from './assets/huddlup_logo_white_w_trans.png';
 
@@ -46,13 +46,13 @@ const AppContent = ({ user, openSignIn }) => {
               to="/editor"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
             >
-              <Home className="w-4 h-4 mr-1" /> Editor
+              <House className="w-4 h-4 mr-1" /> Editor
             </Link>
             <Link
               to="/library"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
             >
-              <Book className="w-4 h-4 mr-1" /> Play Library
+              <LibraryBig className="w-4 h-4 mr-1" /> Play Library
             </Link>
             <Link
               to="/playbooks"
@@ -71,9 +71,9 @@ const AppContent = ({ user, openSignIn }) => {
                 <span className="mx-2 text-sm">{user.email}</span>
                 <button
                   onClick={() => signOut(auth)}
-                  className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                  className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
                 >
-                  Sign Out
+                  <LogOut className="w-4 h-4 mr-1" /> Sign Out
                 </button>
               </>
             ) : (

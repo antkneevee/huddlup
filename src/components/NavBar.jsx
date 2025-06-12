@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { Home, Book, BookOpen } from 'lucide-react';
+import { House, LibraryBig, LogOut, BookOpen } from 'lucide-react';
 import { auth } from '../firebase';
 import logo from '../assets/huddlup_logo_white_w_trans.png';
 import { useTeamsContext } from '../context/TeamsContext.jsx';
@@ -37,13 +37,13 @@ const NavBar = ({ user, openSignIn }) => {
             to="/editor"
             className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
           >
-            <Home className="w-4 h-4 mr-1" /> Editor
+            <House className="w-4 h-4 mr-1" /> Editor
           </Link>
           <Link
             to="/library"
             className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
           >
-            <Book className="w-4 h-4 mr-1" /> Play Library
+            <LibraryBig className="w-4 h-4 mr-1" /> Play Library
           </Link>
           <Link
             to="/playbooks"
@@ -78,9 +78,9 @@ const NavBar = ({ user, openSignIn }) => {
               <span className="mx-2 text-sm">{user.email}</span>
               <button
                 onClick={() => signOut(auth)}
-                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
               >
-                Sign Out
+                <LogOut className="w-4 h-4 mr-1" /> Sign Out
               </button>
             </>
           ) : (
