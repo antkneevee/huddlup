@@ -45,15 +45,15 @@ const LandingPage = () => {
       <section className="py-16 bg-gray-900">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Design Plays</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Design</h3>
             <p>Create and customize flag football plays with ease.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Explore &amp; Share</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Huddle</h3>
             <p>Get ideas from curated playbooks and a global library, then easily share with your team.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Play to Win</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Dominate</h3>
             <p>Put your plays into action and lead your team to victory.</p>
           </div>
         </div>
