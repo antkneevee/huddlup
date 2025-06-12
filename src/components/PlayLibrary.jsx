@@ -22,6 +22,8 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [deletePlayId, setDeletePlayId] = useState(null);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -78,6 +80,8 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
     if (success) {
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
+      setSelectedIds([]);
+      setBulkMode(false);
     }
   };
 
@@ -103,6 +107,18 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
     setDeletePlayId(null);
   };
 
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkAdd = () => {
+    if (selectedIds.length > 0) {
+      setShowAddModal(true);
+    }
+  };
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Play Library</h1>
@@ -123,6 +139,28 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
           <option value={50}>Show 50</option>
           <option value={100}>Show 100</option>
         </select>
+        <button
+          onClick={() => {
+            if (bulkMode) {
+              setSelectedIds([]);
+              setBulkMode(false);
+            } else {
+              setBulkMode(true);
+            }
+          }}
+          className="p-2 rounded bg-gray-700 text-white"
+        >
+          {bulkMode ? 'Cancel' : 'Bulk Select'}
+        </button>
+        {bulkMode && (
+          <button
+            onClick={handleBulkAdd}
+            disabled={selectedIds.length === 0}
+            className="p-2 rounded bg-blue-600 text-white disabled:opacity-50"
+          >
+            Add Selected
+          </button>
+        )}
       </div>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {displayedPlays.map((play) => (
@@ -137,12 +175,24 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
               onSelectPlay(play);
             }}
           >
+            {bulkMode && (
+              <input
+                type="checkbox"
+                className="absolute top-1 left-1"
+                checked={selectedIds.includes(play.id)}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  toggleSelect(play.id);
+                }}
+              />
+            )}
             <div className="absolute top-1 right-1 flex gap-1">
               <button
                 className="bg-blue-600 text-white text-xs px-2 py-1 rounded"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedPlayId(play.id);
+                  setSelectedIds([play.id]);
                   setShowAddModal(true);
                 }}
               >
@@ -205,7 +255,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn, adminMode = false }) => {
       </div>
       {showAddModal && (
         <AddToPlaybookModal
-          playId={selectedPlayId}
+          playIds={bulkMode ? selectedIds : [selectedPlayId]}
           onClose={handleAddModalClose}
         />
       )}
