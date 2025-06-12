@@ -97,6 +97,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [saveError, setSaveError] = useState(null);
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
+  const [currentPlayId, setCurrentPlayId] = useState(loadedPlay?.id || null);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [defenseFormation, setDefenseFormation] = useState('No');
@@ -131,6 +132,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       setNotes(loadedPlay.notes || []);
       setPlayName(loadedPlay.name || "");
       setPlayTags((loadedPlay.tags || []).join(", "));
+      setCurrentPlayId(loadedPlay.id || null);
       setSavedState({
         players: loadedPlay.players || [],
         routes: loadedPlay.routes || [],
@@ -138,6 +140,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         name: loadedPlay.name || "",
         tags: loadedPlay.tags || [],
       });
+    } else {
+      setCurrentPlayId(null);
     }
   }, [loadedPlay]);
 
@@ -193,6 +197,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     setPlayName("");
     setPlayTags("");
     setSavedState(null);
+    setCurrentPlayId(null);
   };
 
   function getCurrentState() {
@@ -224,9 +229,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       const dataURL = await getExportDataUrl(4 / 3);
       const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
 
-      const playKey = `Play-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const id = currentPlayId || `Play-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const playData = {
-        id: playKey,
+        id,
         players,
         routes,
         notes,
@@ -241,9 +246,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       };
 
       await setDoc(
-        doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
+        doc(db, 'users', auth.currentUser.uid, 'plays', id),
         playData,
       );
+
+      setCurrentPlayId(id);
 
       const newState = getCurrentState();
       setSavedState(newState);
@@ -302,6 +309,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         playData,
       );
       setPlayName(newName);
+      setCurrentPlayId(playKey);
       // Ensure the "Save As" modal closes before showing confirmation
       setShowSaveAsModal(false);
 
