@@ -9,6 +9,7 @@ import { useTeamsContext } from '../context/TeamsContext.jsx';
 const NavBar = ({ user, openSignIn }) => {
   const location = useLocation();
   const { teams, selectedTeamId, setSelectedTeamId } = useTeamsContext();
+  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
 
   const handleChange = (e) => {
     setSelectedTeamId(e.target.value);
@@ -51,17 +52,26 @@ const NavBar = ({ user, openSignIn }) => {
             <BookOpen className="w-4 h-4 mr-1" /> Playbooks
           </Link>
           {teams.length > 0 && (
-            <select
-              value={selectedTeamId}
-              onChange={handleChange}
-              className="bg-gray-700 text-white px-2 py-1 rounded text-sm"
-            >
-              {teams.map((team) => (
-                <option key={team.id} value={team.id}>
-                  {team.teamName}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              {selectedTeam && selectedTeam.teamLogoUrl && (
+                <img
+                  src={selectedTeam.teamLogoUrl}
+                  alt={`${selectedTeam.teamName} logo`}
+                  className="h-6 w-6 object-cover rounded"
+                />
+              )}
+              <select
+                value={selectedTeamId}
+                onChange={handleChange}
+                className="bg-gray-700 text-white px-2 py-1 rounded text-sm"
+              >
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.teamName}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
           {user ? (
             <>
