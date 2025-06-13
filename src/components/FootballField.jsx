@@ -248,12 +248,8 @@ const FootballField = ({
       style={{ width: width * scale, height: height * scale }}
       className="bg-white border border-gray-300"
       onPointerDown={(e) => {
-        if (e.evt.pointerType !== 'touch') handleStageClick(e);
+        handleStageClick(e);
       }}
-      onPointerUp={(e) => {
-        if (e.evt.pointerType === 'touch') handleStageClick(e);
-      }}
-      onTouchEnd={(e) => handleStageClick(e)}
     >
       <Layer ref={layerRef}>
         {/* Field Lines */}
