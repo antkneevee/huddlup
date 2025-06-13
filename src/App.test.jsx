@@ -1,4 +1,6 @@
 import { render, screen } from '@testing-library/react';
+// Allow use of CommonJS require in this ESM test file
+/* global require */
 import '@testing-library/jest-dom';
 // Provide minimal import.meta.env for tests
 globalThis.import = { meta: { env: { VITE_SITE_OWNER_EMAIL: 'owner@example.com' } } };
