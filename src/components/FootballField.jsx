@@ -245,6 +245,7 @@ const FootballField = ({
       height={height}
       scaleX={scale}
       scaleY={scale}
+      style={{ width: width * scale, height: height * scale }}
       className="bg-white border border-gray-300"
       onPointerDown={(e) => {
         if (e.evt.pointerType !== 'touch') handleStageClick(e);
