@@ -250,6 +250,10 @@ const FootballField = ({
       onPointerDown={(e) => {
         handleStageClick(e);
       }}
+      onTouchStart={(e) => {
+        e.evt?.preventDefault();
+        handleStageClick(e);
+      }}
     >
       <Layer ref={layerRef}>
         {/* Field Lines */}
