@@ -253,6 +253,7 @@ const FootballField = ({
       onPointerUp={(e) => {
         if (e.evt.pointerType === 'touch') handleStageClick(e);
       }}
+      onTouchEnd={(e) => handleStageClick(e)}
     >
       <Layer ref={layerRef}>
         {/* Field Lines */}
