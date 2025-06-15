@@ -65,7 +65,12 @@ const FootballField = ({
   const lineOfScrimmageY = height - 250;
   const yardLineSpacing = 55;
 
-  const defensePositions = useDefensePositions(defenseFormation);
+  const defaultDefensePositions = useDefensePositions(defenseFormation);
+  const [defensePlayers, setDefensePlayers] = useState(defaultDefensePositions);
+
+  useEffect(() => {
+    setDefensePlayers(defaultDefensePositions);
+  }, [defaultDefensePositions]);
 
   const localStageRef = useRef(null);
   const containerRef = useRef(null);
@@ -151,12 +156,16 @@ const FootballField = ({
     });
   }
 
-  const dragBoundFunc = (pos) => {
-    const radius = 30;
+  const PLAYER_RADIUS = 30;
+  const DEFENSE_RADIUS = 35;
+  const getDragBoundFunc = (radius) => (pos) => {
     const newX = Math.max(radius, Math.min(width - radius, pos.x));
     const newY = Math.max(radius, Math.min(height - radius, pos.y));
     return { x: newX, y: newY };
   };
+
+  const dragBoundFunc = getDragBoundFunc(PLAYER_RADIUS);
+  const dragBoundDefense = getDragBoundFunc(DEFENSE_RADIUS);
 
 
   const handleDragEnd = (e, index) => {
@@ -475,13 +484,28 @@ const FootballField = ({
         ))}
 
         {/* Defensive Players */}
-        {defensePositions.map((pos, idx) => (
-          <Group key={`def-${idx}`} x={pos.x} y={pos.y}>
+        {defensePlayers.map((pos, idx) => (
+          <Group
+            key={`def-${idx}`}
+            x={pos.x}
+            y={pos.y}
+            draggable
+            dragBoundFunc={dragBoundDefense}
+            onDragStart={(e) => showCrosshair(e.target.x(), e.target.y())}
+            onDragMove={(e) => showCrosshair(e.target.x(), e.target.y())}
+            onDragEnd={(e) => {
+              hideCrosshair();
+              const updated = [...defensePlayers];
+              updated[idx].x = e.target.x();
+              updated[idx].y = e.target.y();
+              setDefensePlayers(updated);
+            }}
+          >
             <RegularPolygon
               x={0}
               y={0}
               sides={3}
-              radius={30}
+              radius={35}
               fill="#6B7280"
               rotation={180}
               cornerRadius={5}
