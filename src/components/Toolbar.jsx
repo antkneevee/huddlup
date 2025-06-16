@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, FilePlus } from 'lucide-react';
+import { PlusCircle, RotateCcw, Download, Share as ShareIcon, Save, FilePlus, Play as PlayIcon, Pause as PauseIcon, RefreshCcw } from 'lucide-react';
 
 const Toolbar = ({
   onNewPlay,
@@ -8,6 +8,10 @@ const Toolbar = ({
   onShare,
   onSave,
   onSaveAs,
+  onPlay,
+  onPause,
+  onReset,
+  isPlaying,
   playName,
   playTags,
   onPlayNameChange,
@@ -43,6 +47,27 @@ const Toolbar = ({
       >
         <RotateCcw className="w-4 h-4 mr-1" /> Undo
       </button>
+      {onPlay && (
+        <button
+          className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          onClick={isPlaying ? onPause : onPlay}
+        >
+          {isPlaying ? (
+            <PauseIcon className="w-4 h-4 mr-1" />
+          ) : (
+            <PlayIcon className="w-4 h-4 mr-1" />
+          )}
+          {isPlaying ? 'Pause' : 'Play'}
+        </button>
+      )}
+      {onReset && (
+        <button
+          className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+          onClick={onReset}
+        >
+          <RefreshCcw className="w-4 h-4 mr-1" /> Reset
+        </button>
+      )}
       {onSave && (
         <button
           className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
