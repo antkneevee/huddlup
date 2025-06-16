@@ -58,7 +58,9 @@ const FootballField = ({
   setSelectedNoteIndex,
   handlePointDrag,
   stageRef,
-  defenseFormation
+  defenseFormation,
+  isPlaying = false,
+  resetFlag = 0
 }) => {
   const width = 800;
   const height = 600;
@@ -76,7 +78,9 @@ const FootballField = ({
   const containerRef = useRef(null);
   const layerRef = useRef(null);
   const indicatorRef = useRef(null);
+  const playerRefs = useRef({});
   const animRef = useRef(null);
+  const tweenDataRef = useRef([]);
   const [scale, setScale] = useState(1);
   const [crosshair, setCrosshair] = useState(null);
 
@@ -242,6 +246,102 @@ const FootballField = ({
     setSelectedPlayerIndex(null);
   };
 
+  const SPEED = 200; // pixels per second
+
+  const buildTweens = () => {
+    tweenDataRef.current = [];
+    routes.forEach((route) => {
+      const group = playerRefs.current[route.playerId];
+      if (!group) return;
+      const pts = route.points;
+      const tweens = [];
+      let prevX = pts[0];
+      let prevY = pts[1];
+      for (let i = 2; i < pts.length; i += 2) {
+        const x = pts[i];
+        const y = pts[i + 1];
+        const dist = Math.hypot(x - prevX, y - prevY);
+        const duration = dist / SPEED;
+        const tween = new Konva.Tween({
+          node: group,
+          x,
+          y,
+          duration,
+          easing: Konva.Easings.Linear,
+        });
+        tweens.push(tween);
+        prevX = x;
+        prevY = y;
+      }
+      tweenDataRef.current.push({ playerId: route.playerId, tweens, index: 0, currentTween: null });
+    });
+  };
+
+  const startTween = (data) => {
+    if (data.index >= data.tweens.length) {
+      data.currentTween = null;
+      return;
+    }
+    const tw = data.tweens[data.index];
+    data.currentTween = tw;
+    tw.play();
+    tw.onFinish(() => {
+      data.index += 1;
+      data.currentTween = null;
+      startTween(data);
+    });
+  };
+
+  const playTweens = () => {
+    if (tweenDataRef.current.length === 0) buildTweens();
+    tweenDataRef.current.forEach((d) => {
+      if (d.currentTween) {
+        d.currentTween.play();
+      } else {
+        startTween(d);
+      }
+    });
+  };
+
+  const pauseTweens = () => {
+    tweenDataRef.current.forEach((d) => {
+      if (d.currentTween) d.currentTween.pause();
+    });
+  };
+
+  const resetTweens = () => {
+    tweenDataRef.current.forEach((d) => {
+      if (d.currentTween) d.currentTween.pause();
+      d.tweens.forEach((t) => t.destroy());
+    });
+    tweenDataRef.current = [];
+    players.forEach((p) => {
+      const g = playerRefs.current[p.id];
+      if (g) {
+        g.position({ x: p.x, y: p.y });
+      }
+    });
+    if (layerRef.current) layerRef.current.draw();
+  };
+
+  useEffect(() => {
+    if (isPlaying) {
+      playTweens();
+    } else {
+      pauseTweens();
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    return () => {
+      resetTweens();
+    };
+  }, []);
+
+  useEffect(() => {
+    resetTweens();
+  }, [resetFlag]);
+
   return (
     <div
       ref={containerRef}
@@ -403,6 +503,9 @@ const FootballField = ({
             key={index}
             x={player.x}
             y={player.y}
+            ref={(node) => {
+              if (node) playerRefs.current[player.id] = node;
+            }}
             draggable
             dragBoundFunc={dragBoundFunc}
             onDragStart={(e) => showCrosshair(e.target.x(), e.target.y())}

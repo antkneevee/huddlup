@@ -101,6 +101,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [currentPlayId, setCurrentPlayId] = useState(loadedPlay?.id || null);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [resetFlag, setResetFlag] = useState(0);
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
@@ -633,6 +635,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     document.body.removeChild(link);
   };
 
+  const handlePlay = () => setIsPlaying(true);
+  const handlePause = () => setIsPlaying(false);
+  const handleReset = () => {
+    setIsPlaying(false);
+    setResetFlag((f) => f + 1);
+  };
+
   const isPlaySaved = () => isSaved;
 
   return (
@@ -735,6 +744,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           handlePointDrag={handlePointDrag}
           stageRef={stageRef}
           defenseFormation={defenseFormation}
+          isPlaying={isPlaying}
+          resetFlag={resetFlag}
         />
         </div>
 
@@ -909,14 +920,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             onNewPlay={handleNewPlay}
             onUndo={handleUndo}
             onExport={handleExport}
-            onShare={handleShare}
-            onSave={handleSave}
-            onSaveAs={handleSaveAs}
-            playName={playName}
-            playTags={playTags}
-            onPlayNameChange={setPlayName}
-            onPlayTagsChange={setPlayTags}
-          />
+          onShare={handleShare}
+          onSave={handleSave}
+          onSaveAs={handleSaveAs}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onReset={handleReset}
+          isPlaying={isPlaying}
+          playName={playName}
+          playTags={playTags}
+          onPlayNameChange={setPlayName}
+          onPlayTagsChange={setPlayTags}
+        />
         </div>
       </div>
 
